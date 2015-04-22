@@ -1,7 +1,9 @@
 package converter;
 
 import domain.Organisation;
+import logic.StringTrimmer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,19 +12,39 @@ import java.util.List;
 public class OrganisationConverter extends AbstractConverter<Organisation> {
 
     List<Organisation> organisationList;
-    public OrganisationConverter(List<Organisation> organisationList){
+    Organisation organisation;
+    public OrganisationConverter(){
         super();
-        this.organisationList = organisationList;
+        this.organisationList = new ArrayList<Organisation>();
     }
 
+
     @Override
-    public void addValue(String value) {
-        //TODO
+    public AbstractConverter<Organisation> addValue(String value) {
+        if(StringTrimmer.trim(value).isEmpty()){
+            organisation = null;
+            return this;
+        }
+        if(value.toUpperCase().contains("FAIR") && value.toUpperCase().contains("SENSIBEL")){
+            value = "Fair und Sensibel";
+        }
+
+        Organisation org = new Organisation(StringTrimmer.trim(value));
+        if(organisationList.contains(org)){
+            organisation = organisationList.get(organisationList.indexOf(org));
+        }else{
+            organisation = org;
+            organisationList.add(org);
+        }
+        return this;
     }
 
     @Override
     public Organisation build() {
-        //TODO
-        return null;
+        return organisation;
+    }
+
+    public List<Organisation> getOrganisationList() {
+        return organisationList;
     }
 }

@@ -22,11 +22,12 @@ public class StateConverter extends AbstractConverter<String> {
         stateMapping.put("V", "Vorarlberg");
     }
     @Override
-    public void addValue(String value) {
+    public AbstractConverter<String> addValue(String value) {
         state = null;
         try {
             state = stateMapping.get(value);
         }catch (Exception e){}
+        return this;
     }
 
     @Override

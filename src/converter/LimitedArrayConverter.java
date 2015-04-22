@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Lukas on 21.04.2015.
  */
-public class LimitedArrayConverter extends AbstractConverter<String[]>{
+public class LimitedArrayConverter extends AbstractConverter<String[]> {
     ArrayList<String> values;
     int maxLength;
     public LimitedArrayConverter(int length) {
@@ -14,11 +14,12 @@ public class LimitedArrayConverter extends AbstractConverter<String[]>{
     }
 
     @Override
-    public void addValue(String value) {
+    public AbstractConverter<String[]> addValue(String value) {
         if(values.size() >= maxLength){
             values.clear();
         }
         values.add(value);
+        return this;
     }
 
     @Override
