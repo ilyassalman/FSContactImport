@@ -21,7 +21,7 @@ public class FileParser {
 
     public void run() throws FileNotFoundException, NoSuchMethodException, UnsupportedEncodingException {
         boolean skipFirstLine = true;
-        String csvFile = "C:\\Users\\Lukas\\Downloads\\kontakte.txt";
+        String csvFile = "C:\\Users\\Lukas\\Downloads\\kontakte.csv";
         BufferedReader br = null;
         OrganisationConverter organisationConverter = new OrganisationConverter();
         String line = "";
@@ -68,7 +68,7 @@ public class FileParser {
         columnMapping.put(27, "AcademicDegreeBefore");
 
         br = new BufferedReader(new InputStreamReader(
-                new FileInputStream(csvFile), "utf-8"));
+                new FileInputStream(csvFile), "ISO-8859-15"));
         line =getLine(br);
         while (line != null) {
             if(skipFirstLine){
