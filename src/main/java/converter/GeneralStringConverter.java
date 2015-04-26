@@ -7,6 +7,7 @@ import logic.StringTrimmer;
  */
 public class GeneralStringConverter extends AbstractConverter<String> {
     String value;
+
     @Override
     public AbstractConverter<String> addValue(String value) {
         this.value = StringTrimmer.trim(value);

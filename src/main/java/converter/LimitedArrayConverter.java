@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class LimitedArrayConverter extends AbstractConverter<String[]> {
     ArrayList<String> values;
     int maxLength;
+
     public LimitedArrayConverter(int length) {
         maxLength = length;
         values = new ArrayList<String>();
@@ -15,7 +16,7 @@ public class LimitedArrayConverter extends AbstractConverter<String[]> {
 
     @Override
     public AbstractConverter<String[]> addValue(String value) {
-        if(values.size() >= maxLength){
+        if (values.size() >= maxLength) {
             values.clear();
         }
         values.add(value);
@@ -24,7 +25,7 @@ public class LimitedArrayConverter extends AbstractConverter<String[]> {
 
     @Override
     public String[] build() {
-        if(values.size() != maxLength){
+        if (values.size() != maxLength) {
             return null;
         }
         return values.toArray(new String[maxLength]);

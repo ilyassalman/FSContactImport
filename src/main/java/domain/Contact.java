@@ -1,31 +1,70 @@
 package domain;
 
+import javax.persistence.*;
+
 /**
  * Created by Lukas on 21.04.2015.
  */
-public class Contact {
+
+@Entity
+@Table(name = "Contacts")
+public class Contact extends BasePersistable {
+
+    @Column
     private String title;
+
+    @Column
     private String name;
+
+    @Column
     private String surname;
+
+    @Column
     private String academicDegreeBefore;
+
+    @Column
     private String academicDegreeAfter;
+
+    @Column
     private String address;
+
+    @Column
+    private String PLZ;
+
+    @Column
+    private String homepage;
+
+    @Column
+    private String info;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "ID")
+    private Organisation organisation;
+
+    @Column
+    private String country;
+
+    @Column
+    private boolean newsLetter;
+
+    @Column
+    private String[] email;
+
+    @Column
+    private String town;
+
+    @Column
+    private String state;
+
+    @Column
+    private String[] languages;
+
+    @Column
+    private String[] number;
 
     public void setPLZ(String PLZ) {
         this.PLZ = PLZ;
     }
-
-    private String PLZ;
-    private String homepage;
-    private String info;
-    private Organisation organisation;
-    private String country;
-    private boolean newsLetter;
-    private String[] email;
-    private String town;
-    private String state;
-    private String[] languages;
-    private String[] number;
 
     public void setTown(String town) {
         this.town = town;
