@@ -132,14 +132,8 @@ public class FileParser {
         }
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream("C:\\Users\\Lukas\\Downloads\\org.csv"), "UTF-8"));
-        for (Organisation o : organisationConverter.getOrganisationList()) {
-            try {
-                bufferedWriter.write(o.getName());
-                bufferedWriter.newLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        organisationRepository.save(organisationConverter.getOrganisationList());
+
     }
 
     private String getLine(BufferedReader br) {

@@ -57,6 +57,9 @@ public class Organisation extends BasePersistable {
     }
 
     public String getName() {
+        if(name == null){
+            return "";
+        }
         return name;
     }
 }
