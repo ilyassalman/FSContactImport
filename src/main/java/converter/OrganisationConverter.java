@@ -14,9 +14,9 @@ public class OrganisationConverter extends AbstractConverter<Organisation> {
     List<Organisation> organisationList;
     Organisation organisation;
 
-    public OrganisationConverter() {
+    public OrganisationConverter(List<Organisation> all) {
         super();
-        this.organisationList = new ArrayList<Organisation>();
+        this.organisationList = all;
     }
 
 

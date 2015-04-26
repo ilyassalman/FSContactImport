@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import repositories.ContactRepository;
-import spock.lang.Shared;
 
 /**
  * Created by Dominik on 26.04.2015.

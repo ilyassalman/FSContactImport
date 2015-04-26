@@ -3,6 +3,10 @@ package logic;
 import converter.*;
 import domain.Contact;
 import domain.Organisation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import repositories.ContactRepository;
+import repositories.OrganisationRepository;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -14,14 +18,17 @@ import java.util.List;
 /**
  * Created by Lukas on 21.04.2015.
  */
+@Component
 public class FileParser {
 
+    @Autowired
+    OrganisationRepository organisationRepository;
 
     public void run() throws FileNotFoundException, NoSuchMethodException, UnsupportedEncodingException {
         boolean skipFirstLine = true;
         String csvFile = "C:\\Users\\Lukas\\Downloads\\kontakte.csv";
         BufferedReader br = null;
-        OrganisationConverter organisationConverter = new OrganisationConverter();
+        OrganisationConverter organisationConverter = new OrganisationConverter(organisationRepository.findAll());
         String line = "";
         String cvsSplitBy = ";";
         HashMap<Integer, String> columnMapping = new HashMap<Integer, String>();
