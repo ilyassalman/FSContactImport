@@ -1,17 +1,15 @@
 package logic;
 
-import com.sun.xml.internal.bind.api.impl.NameConverter;
 import converter.*;
 import domain.Contact;
 import domain.Organisation;
-import org.omg.IOP.Encoding;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Lukas on 21.04.2015.
@@ -69,11 +67,11 @@ public class FileParser {
 
         br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(csvFile), "ISO-8859-15"));
-        line =getLine(br);
+        line = getLine(br);
         while (line != null) {
-            if(skipFirstLine){
+            if (skipFirstLine) {
                 skipFirstLine = false;
-                line =getLine(br);
+                line = getLine(br);
                 continue;
             }
             Contact c = new Contact();
@@ -110,12 +108,12 @@ public class FileParser {
                     e.printStackTrace();
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
-            line =getLine(br);
+            line = getLine(br);
 
         }
         if (br != null) {
@@ -127,7 +125,7 @@ public class FileParser {
         }
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream("C:\\Users\\Lukas\\Downloads\\org.csv"), "UTF-8"));
-        for(Organisation o:organisationConverter.getOrganisationList()){
+        for (Organisation o : organisationConverter.getOrganisationList()) {
             try {
                 bufferedWriter.write(o.getName());
                 bufferedWriter.newLine();
@@ -137,7 +135,7 @@ public class FileParser {
         }
     }
 
-    private String getLine(BufferedReader br){
+    private String getLine(BufferedReader br) {
         try {
             return br.readLine();
         } catch (IOException e1) {

@@ -1,0 +1,20 @@
+04-26 19:06:56 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "CONTACTS" nicht gefunden
+Table "CONTACTS" not found; SQL statement:
+select * from contacts [42102-176]
+04-26 19:07:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "CONTACTS" nicht gefunden
+Table "CONTACTS" not found; SQL statement:
+select * from contacts [42102-176]
+04-26 19:07:56 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "CONTACT" nicht gefunden
+Table "CONTACT" not found; SQL statement:
+select * from contact [42102-176]
+04-26 19:08:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "CONTACTS" nicht gefunden
+Table "CONTACTS" not found; SQL statement:
+select * from PUBLIC.CONTACTS [42102-176]
+04-26 19:08:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "CONTACT" nicht gefunden
+Table "CONTACT" not found; SQL statement:
+select * from PUBLIC.CONTACT [42102-176]

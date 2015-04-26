@@ -13,7 +13,8 @@ public class OrganisationConverter extends AbstractConverter<Organisation> {
 
     List<Organisation> organisationList;
     Organisation organisation;
-    public OrganisationConverter(){
+
+    public OrganisationConverter() {
         super();
         this.organisationList = new ArrayList<Organisation>();
     }
@@ -21,18 +22,18 @@ public class OrganisationConverter extends AbstractConverter<Organisation> {
 
     @Override
     public AbstractConverter<Organisation> addValue(String value) {
-        if(StringTrimmer.trim(value).isEmpty()){
+        if (StringTrimmer.trim(value).isEmpty()) {
             organisation = null;
             return this;
         }
-        if(value.toUpperCase().contains("FAIR") && value.toUpperCase().contains("SENSIBEL")){
+        if (value.toUpperCase().contains("FAIR") && value.toUpperCase().contains("SENSIBEL")) {
             value = "Fair und Sensibel";
         }
 
         Organisation org = new Organisation(StringTrimmer.trim(value));
-        if(organisationList.contains(org)){
+        if (organisationList.contains(org)) {
             organisation = organisationList.get(organisationList.indexOf(org));
-        }else{
+        } else {
             organisation = org;
             organisationList.add(org);
         }

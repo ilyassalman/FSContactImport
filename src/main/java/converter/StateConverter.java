@@ -9,7 +9,8 @@ public class StateConverter extends AbstractConverter<String> {
 
     HashMap<String, String> stateMapping;
     String state;
-    public  StateConverter(){
+
+    public StateConverter() {
         stateMapping = new HashMap<String, String>();
         stateMapping.put("W", "Wien");
         stateMapping.put("N", "Niederösterreich");
@@ -21,12 +22,14 @@ public class StateConverter extends AbstractConverter<String> {
         stateMapping.put("Sa", "Salzburg");
         stateMapping.put("V", "Vorarlberg");
     }
+
     @Override
     public AbstractConverter<String> addValue(String value) {
         state = null;
         try {
             state = stateMapping.get(value);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return this;
     }
 

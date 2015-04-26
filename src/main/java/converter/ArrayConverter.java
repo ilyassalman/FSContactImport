@@ -6,6 +6,7 @@ package converter;
 public class ArrayConverter extends AbstractConverter<String[]> {
     char trimChar;
     String[] result;
+
     public ArrayConverter(char c) {
         super();
         trimChar = c;
@@ -13,13 +14,13 @@ public class ArrayConverter extends AbstractConverter<String[]> {
 
     @Override
     public AbstractConverter<String[]> addValue(String value) {
-        if(value.trim().isEmpty()){
+        if (value.trim().isEmpty()) {
             this.result = new String[0];
         }
         String[] untrimmedResult = value.split(String.valueOf(trimChar));
         result = new String[untrimmedResult.length];
         int i = 0;
-        for(String uS: untrimmedResult){
+        for (String uS : untrimmedResult) {
             result[i] = uS.trim();
             i++;
         }
