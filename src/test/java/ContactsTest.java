@@ -24,8 +24,6 @@ public class ContactsTest extends AbstractJUnit4SpringContextTests {
 
     Contact testContact;
 
-    static int currentID = 0;
-
     @Before
     public void setUp() throws Exception {
         testContact = new Contact();
@@ -37,13 +35,12 @@ public class ContactsTest extends AbstractJUnit4SpringContextTests {
         contactRepository.save(testContact);
 
         Assert.assertNotEquals(0, testContact.getId());
-
-        currentID = testContact.getId();
     }
 
     @Test
     public void testDeleteContact() {
-        contactRepository.delete(currentID);
+        contactRepository.save(testContact);
+        contactRepository.delete(testContact.getId());
     }
 
     @Test
