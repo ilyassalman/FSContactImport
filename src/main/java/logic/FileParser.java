@@ -5,6 +5,7 @@ import domain.ContactsEntity;
 import domain.TelnumbersEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import repositories.LanguageRepository;
 import repositories.OrganisationRepository;
 
 import java.io.*;
@@ -23,6 +24,10 @@ public class FileParser {
     @Autowired
     OrganisationRepository organisationRepository;
 
+    @Autowired
+    LanguageRepository languageRepository;
+
+
     public void run() throws FileNotFoundException, NoSuchMethodException, UnsupportedEncodingException {
         boolean skipFirstLine = true;
         String csvFile = "C:\\Users\\Lukas\\Downloads\\kontakte.csv";
@@ -33,13 +38,14 @@ public class FileParser {
         HashMap<Integer, String> columnMapping = new HashMap<Integer, String>();
         HashMap<Integer, AbstractConverter> converterMapping = new HashMap<Integer, AbstractConverter>();
         TelnumberConverter numberConverter = new TelnumberConverter();
-        LimitedArrayConverter emailConverter = new LimitedArrayConverter(2);
+        AbstractConverter emailConverter = new EmailConverter();
+        SpeaksConverter speaksConverter = new SpeaksConverter(languageRepository.findAll());
         AbstractConverter<String> standardConverter = new GeneralStringConverter();
         columnMapping.put(0, "Surname");
         columnMapping.put(1, "Name");
-        columnMapping.put(2, "Organisation");
+        columnMapping.put(2, "OrganisationsByOrganisationsId");
         converterMapping.put(2, organisationConverter);
-        columnMapping.put(3, "Email");
+        columnMapping.put(3, null);
         converterMapping.put(3, emailConverter);
         columnMapping.put(4, null);
         columnMapping.put(5, null);
@@ -49,21 +55,21 @@ public class FileParser {
         converterMapping.put(8, new StateConverter());
         columnMapping.put(9, null);
         columnMapping.put(10, null);
-        columnMapping.put(11, "Email");
+        columnMapping.put(11, "Emails");
         converterMapping.put(11, emailConverter);
         columnMapping.put(12, null);
         columnMapping.put(13, null);
-        columnMapping.put(14, "Homepage");
+        columnMapping.put(14, "Hompage");
         columnMapping.put(15, "Info");
         columnMapping.put(16, null);
         columnMapping.put(17, null);
         converterMapping.put(17, numberConverter);
         columnMapping.put(18, null);
-        columnMapping.put(19, "Town");
+        columnMapping.put(19, null);
         columnMapping.put(20, "PLZ");
         columnMapping.put(21, null);
-        columnMapping.put(22, "Languages");
-        converterMapping.put(22, new ArrayConverter(','));
+        columnMapping.put(22, "SpeaksesById");
+        converterMapping.put(22, speaksConverter);
         columnMapping.put(23, "Address");
         columnMapping.put(24, null);
         columnMapping.put(25, "Telnumbers");

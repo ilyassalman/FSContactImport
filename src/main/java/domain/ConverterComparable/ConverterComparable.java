@@ -28,8 +28,10 @@ public abstract class ConverterComparable<T> {
         }catch (Exception e){
             return false;
         }
-        return lol.getTextToCompare().toUpperCase().trim() == this.getTextToCompare().toUpperCase().trim();
+        return lol.getTextToCompare().toUpperCase().trim().equals( this.getTextToCompare().toUpperCase().trim());
     }
+
+
 
     public abstract String getTextToCompare();
 }

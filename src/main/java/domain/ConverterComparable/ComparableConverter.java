@@ -11,12 +11,12 @@ import java.util.List;
  */
 public class ComparableConverter<T extends ConverterComparable, P extends BasePersistable> {
 
-    public List<T> convert(List<P> toConvert, Class<T> pClass){
+    public List<T> convert(List<P> toConvert, Class<P> pClass, Class<T> tClass){
         List<T> converted = new ArrayList<>();
         for(P convertEntity: toConvert){
             T convertedEntity;
             try {
-                convertedEntity = pClass.getConstructor(pClass).newInstance(convertEntity);
+                convertedEntity = tClass.getConstructor(pClass).newInstance(convertEntity);
             } catch (InstantiationException e) {
                 e.printStackTrace();
                 continue;

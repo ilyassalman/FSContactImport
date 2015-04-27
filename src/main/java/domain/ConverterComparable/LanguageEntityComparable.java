@@ -12,6 +12,16 @@ public class LanguageEntityComparable extends ConverterComparable<LanguagesEntit
 
     @Override
     public String getTextToCompare() {
-        return entityToCompare.getEnglishName();
+        return entityToCompare.getGermanName();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }
