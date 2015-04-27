@@ -1,27 +1,26 @@
 package converter;
 
-import domain.Organisation;
+import domain.OrganisationsEntity;
 import logic.StringTrimmer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Lukas on 21.04.2015.
  */
-public class OrganisationConverter extends AbstractConverter<Organisation> {
+public class OrganisationConverter extends AbstractConverter<OrganisationsEntity> {
 
-    List<Organisation> organisationList;
-    Organisation organisation;
+    List<OrganisationsEntity> organisationList;
+    OrganisationsEntity organisation;
 
-    public OrganisationConverter(List<Organisation> all) {
+    public OrganisationConverter(List<OrganisationsEntity> all) {
         super();
         this.organisationList = all;
     }
 
 
     @Override
-    public AbstractConverter<Organisation> addValue(String value) {
+    public AbstractConverter<OrganisationsEntity> addValue(String value) {
         if (StringTrimmer.trim(value).isEmpty()) {
             organisation = null;
             return this;
@@ -30,7 +29,8 @@ public class OrganisationConverter extends AbstractConverter<Organisation> {
             value = "Fair und Sensibel";
         }
 
-        Organisation org = new Organisation(StringTrimmer.trim(value));
+        OrganisationsEntity org = new OrganisationsEntity();
+        org.setName(StringTrimmer.trim(value));
         if (organisationList.contains(org)) {
             organisation = organisationList.get(organisationList.indexOf(org));
         } else {
@@ -41,11 +41,11 @@ public class OrganisationConverter extends AbstractConverter<Organisation> {
     }
 
     @Override
-    public Organisation build() {
+    public OrganisationsEntity build() {
         return organisation;
     }
 
-    public List<Organisation> getOrganisationList() {
+    public List<OrganisationsEntity> getOrganisationList() {
         return organisationList;
     }
 }

@@ -1,11 +1,10 @@
-import domain.Contact;
-import domain.Organisation;
+import domain.ContactsEntity;
+import domain.OrganisationsEntity;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.AssertThrows;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import repositories.OrganisationRepository;
@@ -21,7 +20,7 @@ public class OrganisationTest extends AbstractJUnit4SpringContextTests {
     @Autowired
     OrganisationRepository organisationRepository;
 
-    Organisation organisation = new Organisation();
+    OrganisationsEntity organisation = new OrganisationsEntity();
 
     @Test
     public void addOrganisation() {
@@ -43,10 +42,10 @@ public class OrganisationTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void testSaveOrganisationWithContact() {
-        Contact contact = new Contact();
+        ContactsEntity contact = new ContactsEntity();
         contact.setAcademicDegreeAfter("lolololol");
 
-        organisation.getContacts().add(contact);
+        organisation.getContactsesById().add(contact);
 
         organisationRepository.save(organisation);
 

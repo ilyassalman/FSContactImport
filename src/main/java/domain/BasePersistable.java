@@ -1,20 +1,21 @@
 package domain;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 /**
- * Created by Dominik on 26.04.2015.
+ * Created by Dominik on 17.01.2015.
  */
-
 @MappedSuperclass
-public class BasePersistable {
+public abstract class BasePersistable {
+
+    protected int id;
 
     @Id
     @GeneratedValue
-    protected int id;
-
+    @Column(name = "ID")
     public int getId() {
         return id;
     }

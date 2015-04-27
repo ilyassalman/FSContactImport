@@ -1,11 +1,10 @@
 package logic;
 
 import converter.*;
-import domain.Contact;
-import domain.Organisation;
+import domain.ContactsEntity;
+import domain.TelnumbersEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import repositories.ContactRepository;
 import repositories.OrganisationRepository;
 
 import java.io.*;
@@ -33,7 +32,7 @@ public class FileParser {
         String cvsSplitBy = ";";
         HashMap<Integer, String> columnMapping = new HashMap<Integer, String>();
         HashMap<Integer, AbstractConverter> converterMapping = new HashMap<Integer, AbstractConverter>();
-        LimitedArrayConverter numberConverter = new LimitedArrayConverter(2);
+        TelnumberConverter numberConverter = new TelnumberConverter();
         LimitedArrayConverter emailConverter = new LimitedArrayConverter(2);
         AbstractConverter<String> standardConverter = new GeneralStringConverter();
         columnMapping.put(0, "Surname");
@@ -57,7 +56,7 @@ public class FileParser {
         columnMapping.put(14, "Homepage");
         columnMapping.put(15, "Info");
         columnMapping.put(16, null);
-        columnMapping.put(17, "Number");
+        columnMapping.put(17, null);
         converterMapping.put(17, numberConverter);
         columnMapping.put(18, null);
         columnMapping.put(19, "Town");
@@ -67,7 +66,7 @@ public class FileParser {
         converterMapping.put(22, new ArrayConverter(','));
         columnMapping.put(23, "Address");
         columnMapping.put(24, null);
-        columnMapping.put(25, "Number");
+        columnMapping.put(25, "Telnumbers");
         converterMapping.put(25, numberConverter);
         columnMapping.put(26, null);
         columnMapping.put(27, "AcademicDegreeBefore");
@@ -81,7 +80,7 @@ public class FileParser {
                 line = getLine(br);
                 continue;
             }
-            Contact c = new Contact();
+            ContactsEntity c = new ContactsEntity();
             String[] columns;
             do {
                 columns = line.split(cvsSplitBy);
@@ -101,7 +100,7 @@ public class FileParser {
                 }
                 String setter = "set" + columnMapping.get(index);
                 AbstractConverter converter = converterMapping.containsKey(index) ? converterMapping.get(index) : standardConverter;
-                Class<? extends Contact> contactClass = c.getClass();
+                Class<? extends ContactsEntity> contactClass = c.getClass();
                 Class returntype = converter.getClass().getDeclaredMethod("build").getReturnType();
                 try {
                     contactClass.getDeclaredMethod(setter, returntype).invoke(c, converter.addValue(value).build());

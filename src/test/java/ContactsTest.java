@@ -1,5 +1,5 @@
-import domain.Contact;
-import domain.Organisation;
+import domain.ContactsEntity;
+import domain.OrganisationsEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import repositories.ContactRepository;
+import repositories.OrganisationRepository;
 
 /**
  * Created by Dominik on 26.04.2015.
@@ -21,11 +22,14 @@ public class ContactsTest extends AbstractJUnit4SpringContextTests {
     @Autowired
     private ContactRepository contactRepository;
 
-    Contact testContact;
+    @Autowired
+    private OrganisationRepository organisationRepository;
+
+    ContactsEntity testContact;
 
     @Before
     public void setUp() throws Exception {
-        testContact = new Contact();
+        testContact = new ContactsEntity();
         testContact.setAcademicDegreeAfter("dfadfasdf");
     }
 
@@ -44,9 +48,11 @@ public class ContactsTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void testSaveContactWithOrganisation() {
-        Organisation org = new Organisation();
+        OrganisationsEntity org = new OrganisationsEntity();
+        org.setName("LAWL");
+        organisationRepository.save(org);
 
-        testContact.setOrganisation(org);
+        testContact.setOrganisationsByOrganisationsId(org);
         contactRepository.save(testContact);
 
         Assert.assertNotEquals(0, testContact.getId());
