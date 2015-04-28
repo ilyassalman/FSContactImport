@@ -2,18 +2,21 @@ package logic;
 
 import converter.*;
 import domain.ContactsEntity;
+import domain.SpeaksEntity;
 import domain.TelnumbersEntity;
+import net.fortuna.ical4j.model.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import repositories.ContactRepository;
 import repositories.LanguageRepository;
 import repositories.OrganisationRepository;
+import repositories.PLZRepository;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * Created by Lukas on 21.04.2015.
@@ -27,10 +30,18 @@ public class FileParser {
     @Autowired
     LanguageRepository languageRepository;
 
+    @Autowired
+    ContactRepository contactRepository;
+
+    @Autowired
+    PLZRepository plzRepository;
+
 
     public void run() throws FileNotFoundException, NoSuchMethodException, UnsupportedEncodingException {
-        boolean skipFirstLine = true;
-        String csvFile = "C:\\Users\\Lukas\\Downloads\\kontakte.csv";
+        boolean skipFirstLine = false;
+        String csvFile = "C:\\Users\\Lukas\\Downloads\\fsimport\\contacts.csv";
+        String outputFile = "C:\\Users\\Lukas\\Downloads\\fsimport\\garbages.csv";
+        BufferedWriter bw = null;
         BufferedReader br = null;
         OrganisationConverter organisationConverter = new OrganisationConverter(organisationRepository.findAll());
         String line = "";
@@ -41,6 +52,7 @@ public class FileParser {
         AbstractConverter emailConverter = new EmailConverter();
         SpeaksConverter speaksConverter = new SpeaksConverter(languageRepository.findAll());
         AbstractConverter<String> standardConverter = new GeneralStringConverter();
+        PLZConverter plzConverter = new PLZConverter(plzRepository.findAll());
         columnMapping.put(0, "Surname");
         columnMapping.put(1, "Name");
         columnMapping.put(2, "OrganisationsByOrganisationsId");
@@ -51,6 +63,7 @@ public class FileParser {
         columnMapping.put(5, null);
         columnMapping.put(6, null);
         columnMapping.put(7, "Title");
+        converterMapping.put(7, new MaxLengthConverter(45));
         columnMapping.put(8, "State");
         converterMapping.put(8, new StateConverter());
         columnMapping.put(9, null);
@@ -66,7 +79,8 @@ public class FileParser {
         converterMapping.put(17, numberConverter);
         columnMapping.put(18, null);
         columnMapping.put(19, null);
-        columnMapping.put(20, "PLZ");
+        columnMapping.put(20, "PostleitzahlByPlz");
+        converterMapping.put(20, plzConverter);
         columnMapping.put(21, null);
         columnMapping.put(22, "SpeaksesById");
         converterMapping.put(22, speaksConverter);
@@ -79,32 +93,89 @@ public class FileParser {
 
         br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(csvFile), "ISO-8859-15"));
+        int lines = 0;
+        DecimalFormat df = new DecimalFormat("###0.0");
+        try {
+            while (br.readLine() != null) lines++;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        br = new BufferedReader(new InputStreamReader(
+                new FileInputStream(csvFile), "ISO-8859-15"));
+        File file = new File(outputFile);
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(outputFile), "ISO-8859-15"
+        ));
+
+        //GET FIRST LINE
         line = getLine(br);
+        int currentLine = 0;
+
+
+        //FOR EVERY LINE IN THE FILE
         while (line != null) {
+            boolean failed = false;
+            //IF YOU WANT TO SKIP THE FIRST LINE
             if (skipFirstLine) {
                 skipFirstLine = false;
                 line = getLine(br);
+                currentLine++;
                 continue;
             }
-            ContactsEntity c = new ContactsEntity();
+
+
+            //MAKE SURE YOU GET ALL THE LINES THAT MATTERS IN ONE DATASET (INDECATED BY ")
             String[] columns;
-            do {
+            columns = line.split(cvsSplitBy);
+            while (columns[columns.length - 1].startsWith("\"")){
+                line += getLine(br);
                 columns = line.split(cvsSplitBy);
-                if (columns[columns.length - 1].startsWith("\"")) {
-                    line += getLine(br);
-                }
             }
-            while (columns[columns.length - 1].startsWith("\""));
-            List<String> columnList = Arrays.asList(columns);
-            Iterator<String> columnIterator = columnList.iterator();
+
+            //NOW WE SHOULD HAVE A COMPLETE LINE AND THE SPLITTED COLUMNS ALREADY
+            List<String> values = Arrays.asList(columns);
+
+            if(columnMapping.size() < values.size()) {
+                System.out.println("The mapping does not match with the lines");
+                System.out.println(line);
+                System.out.println(columnMapping.size() + " - " + columns.length);
+                toGarbage(bw, line);
+                line = getLine(br);
+                currentLine++;
+                continue;
+            }
+
+            //CREATE A NEW CONTACT ENTITY
+            ContactsEntity c = new ContactsEntity();
+
+            //MAKE AN ITERATOR OF COURSE
+            Iterator<String> columnIterator = Arrays.asList(columns).iterator();
+            //INDEX
             int index = -1;
+            //ITERATE
             while (columnIterator.hasNext()) {
                 index++;
+                //THIS IS THE COLUMN VALUE
                 String value = columnIterator.next().trim();
+                //IF THE MAPPING SHOWS NULL, IT WON'T BE SET IN THE ENTITY
                 if (columnMapping.get(index) == null) {
                     continue;
                 }
+                //OTHERWISE WE MAKE THE SETTER NAME
                 String setter = "set" + columnMapping.get(index);
+                //IF WE MAPPED A CONVERTER WE USE IT; OTHERWISE WE USE THE STANDARD MAPPER
                 AbstractConverter converter = converterMapping.containsKey(index) ? converterMapping.get(index) : standardConverter;
                 Class<? extends ContactsEntity> contactClass = c.getClass();
                 Class returntype = converter.getClass().getDeclaredMethod("build").getReturnType();
@@ -120,12 +191,40 @@ public class FileParser {
                     e.printStackTrace();
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (CriticalConvertFailException e) {
+                    failed = true;
+                    break;
                 }
 
             }
+            if(failed){
+                failed = false;
+                toGarbage(bw, line);
+                line = getLine(br);
+                currentLine++;
+                continue;
+            }
+
+            c.setCreateDate(new Timestamp(new DateTime().getTime()));
+            try {
+                if(c.getOrganisationsByOrganisationsId() != null){
+                    organisationRepository.save(c.getOrganisationsByOrganisationsId());
+                }
+                if (c.getSpeaksesById() != null) {
+                    for(SpeaksEntity speaksEntity : c.getSpeaksesById()){
+                        speaksEntity.getPk().setContactsByContactsPersonId(c);
+                    }
+                }
+                contactRepository.save(c);
+            }catch (Exception e){
+                toGarbage(bw, line);
+                e.printStackTrace();
+            }
+
             line = getLine(br);
+            currentLine++;
+
+            System.out.println(df.format( ((double)currentLine/lines) *100) +"% completed");
 
         }
         if (br != null) {
@@ -135,9 +234,14 @@ public class FileParser {
                 e.printStackTrace();
             }
         }
-        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream("C:\\Users\\Lukas\\Downloads\\org.csv"), "UTF-8"));
-        organisationRepository.save(organisationConverter.getOrganisationList());
+        if (bw != null) {
+            try {
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 
@@ -146,6 +250,15 @@ public class FileParser {
             return br.readLine();
         } catch (IOException e1) {
             return null;
+        }
+    }
+
+    private void toGarbage(BufferedWriter bw, String line){
+        try {
+            bw.write(line);
+            bw.newLine();
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
     }
 }

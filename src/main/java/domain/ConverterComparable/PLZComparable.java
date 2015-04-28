@@ -1,18 +1,18 @@
 package domain.ConverterComparable;
 
-import domain.OrganisationsEntity;
+import domain.PostleitzahlEntity;
 
 /**
- * Created by Lukas on 27.04.2015.
+ * Created by Lukas on 28.04.2015.
  */
-public class OrganisationEntityComparable extends ConverterComparable<OrganisationsEntity> {
-    public OrganisationEntityComparable(OrganisationsEntity entityToCompare) {
+public class PLZComparable extends ConverterComparable<PostleitzahlEntity> {
+    public PLZComparable(PostleitzahlEntity entityToCompare) {
         super(entityToCompare);
     }
 
     @Override
     public String getTextToCompare() {
-        return entityToCompare.getName();
+        return String.valueOf(entityToCompare.getPlz());
     }
 
     @Override
